@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>钟表</title>
+    <style>
+        .content {
+            width: 400px;
+            height: 400px;
+            background: url(images/bgimage_03.gif) no-repeat;
+            background-size: 400px;
+            margin: auto;
+            position: relative;
+        }
+        .shi {
+            width: 90px;
+            height: 10px;
+            background: url("images/shi.png") no-repeat;
+            background-size: 90px;
+            position: absolute;
+            top: 195px;
+            left: 195px;
+            transform-origin: 6.67% 50%;
+        }
+        .fen {
+            width: 120px;
+            height: 10px;
+            background: url("images/fen.png") no-repeat;
+            background-size: 120px;
+            position: absolute;
+            top: 195px;
+            left: 198px;
+            transform-origin: 0.8% 50%;
+        }
+        .miao {
+            width: 200px;
+            height: 10px;
+            background: url("images/miao.png") no-repeat;
+            background-size: 200px;
+            position: absolute;
+            top: 195px;
+            left: 162px;
+            transform-origin:19% 60%;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="shi"></div>
+    <div class="fen"></div>
+    <div class="miao"></div>
+</div>
+<!--总结
+1、旋转起点：一个值 两个值 三个值 共有几个值  默认在元素的中间位置
+2、思想：gettime是总时间  年月日 分秒地区等
+秒针、分针一次转6度，秒针时间用getsecond获取
+分针：getminutes+秒针/60 然后在乘6
+时针：gethours+分针/60 然后在乘30
+3、因为所有的到12进行变动，而刚开始的位置摆在了水平方向，
+要减去90，从竖直方向开始计时，像正常钟表一样，否则，就得逆时针旋转90度再看
+4、rorate属性  改变的是行内样式rorate 他在每秒都是变化的，不是说相对于上次的位置继续旋转多少度-->
+<script>
+    //获取对象
+    var shi= document.getElementsByClassName("shi")[0];
+    var fen=document.getElementsByClassName("fen")[0];
+    var miao= document.getElementsByClassName("miao")[0];
+    // 计时器
+    setInterval(function (){
+        //获取当前时间
+        var newdate=new Date();
+        //秒
+        var sec=newdate.getSeconds();
+        miao.style.transform="rotate("+(sec*6-90)+"deg)";
+        //分
+        var min=newdate.getMinutes()+sec/60;
+        fen.style.transform="rotate("+(min*6-90)+"deg)";
+        //时
+        var hour=(newdate.getHours()+min/60)*30;
+        shi.style.transform="rotate("+(hour-90)+"deg)";
+    },1000);
+</script>
+</body>
+</html>
