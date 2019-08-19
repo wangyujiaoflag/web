@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .par {
+            position: relative;
+            width: 600px;
+            height: 300px;
+            border: 1px solid black;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .nav {
+            width: 4200px;
+            height: 300px;
+        }
+
+        .tras {
+            transition: margin-left 0.5s ease-in;
+        }
+
+        .nav > li {
+            width: 600px;
+            height: 300px;
+            float: left;
+            list-style: none;
+        }
+
+        .nav > li img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .dian {
+            position: absolute;
+            width: 100%;
+            height: auto;
+            left: 0;
+            bottom: 0;
+            text-align: center;
+        }
+
+        .dian > div {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+            display: inline-block;
+        }
+
+        .bgcolor {
+            background: red;
+        }
+
+        .btn {
+            position: absolute;
+            top: 140px;
+            z-index: 11;
+            width: 100%;
+        }
+
+        .btn > span {
+            display: block;
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.69);
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        .btn > span:nth-child(1) {
+            border-radius: 0 50% 50% 0;
+            float: left;
+        }
+
+        .btn > span:nth-child(2) {
+            border-radius: 50% 0 0 50%;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="par">
+    <ul class="nav tras">
+        <li>
+            <img src="img/1.jpg">
+        </li>
+        <li>
+            <img src="img/2.jpg">
+        </li>
+        <li>
+            <img src="img/3.jpg">
+        </li>
+        <li>
+            <img src="img/4.jpg">
+        </li>
+        <li>
+            <img src="img/5.jpg">
+        </li>
+        <li>
+            <img src="img/6.jpg">
+        </li>
+        <li>
+            <img src="img/1.jpg">
+        </li>
+    </ul>
+    <div class="dian">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="btn">
+        <span><</span>
+        <span>></span>
+    </div>
+</div>
+<script>
+    /*
+     * 1.初始动画
+     * */
+    var nav = document.getElementsByClassName("nav")[0];
+    var par = document.getElementsByClassName("par")[0];
+    var dian = document.getElementsByClassName("dian")[0].children;
+    var btnspan = document.getElementsByClassName("btn")[0].children;
+    var speed = 2000;
+    var count = 0;
+    var index = 0;
+    var timer = null;
+    function animate() {
+        timer = setInterval(function () {
+            transanimte();
+        }, speed)
+    }
+    function transanimte() {
+        nav.className = "nav tras";
+        count++;
+        nav.style.marginLeft = (-600 * count) + "px";
+        setTimeout(function () {
+            //动画完成之后去做判断
+            if (count >= nav.children.length - 1) {
+                nav.className = "nav";
+                count = 0;
+                nav.style.marginLeft = "0px";
+            }
+            index = count == 6 ? 0 : count;
+            addColor();
+        }, 500);
+    }
+    function addColor() {
+        for (var i = 0; i < dian.length; i++) {
+            if (i == index) {
+                dian[i].className = "bgcolor";
+            }
+            else {
+                dian[i].className = "";
+            }
+        }
+    }
+    window.onload = function () {
+        animate();
+        addColor();
+        //事件
+        par.onmouseenter = function () {
+            clearInterval(timer);
+        }
+        par.onmouseleave = function () {
+            animate();
+        }
+        for (var i = 0; i < dian.length; i++) {
+            dian[i].index = i;
+            dian[i].onmouseenter = function () {
+                count = this.index - 1;
+                transanimte();
+                index = this.index;
+                addColor();
+            }
+        }
+        //两箭头事件
+        btnspan[0].onclick = function () {
+            transanimte();
+        }
+        //右边   比较难写
+        btnspan[1].onclick = function () {
+            count--;
+            if (count < 0) {
+                nav.className = "nav";
+                count = nav.children.length - 2;
+                nav.style.marginLeft = "-3600px";
+            }
+            //稍微上下代码有点延迟
+            setTimeout(function () {
+                nav.className = "nav tras";
+                nav.style.marginLeft = (-600 * count) + "px";
+                //动画完成之后
+                setTimeout(function () {
+                    index = count;
+                    addColor();
+                }, 500)
+            }, 1);
+        }
+    }
+</script>
+</body>
+</html>

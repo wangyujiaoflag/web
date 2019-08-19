@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>无缝滚动</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .hidden {
+            margin: auto;
+            width: 1000px;
+            height: 200px;
+            overflow: hidden;
+             overflow-x: scroll;
+
+        }
+
+        .contain {
+            width: 2880px;
+            height: 200px;
+        }
+        .picture,
+        .repeat {
+            width: 1440px;
+            height: 200px;
+            float: left;
+        }
+
+        .picture>img,
+        .repeat>img {
+            width: 360px;
+            height: 200px;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hidden">
+        <div class="contain">
+            <div class="picture">
+                <img src="img/1.jpg" alt="">
+                <img src="img/2.jpg" alt="">
+                <img src="img/3.jpg" alt="">
+                <img src="img/4.jpg" alt="">
+            </div>
+            <div class="repeat"></div>
+        </div>
+    </div>
+    <script>
+        var repeat=document.getElementsByClassName("repeat")[0];
+        var picture=document.getElementsByClassName("picture")[0];
+        var hidden=document.getElementsByClassName("hidden")[0];
+        repeat.innerHTML=picture.innerHTML;
+        var speed=1;
+        res();
+        function res(){
+            setInterval(function(){
+                hidden.scrollLeft-=speed;
+            if(hidden.scrollLeft<=0){
+                hidden.scrollLeft=1440;
+            }
+
+
+
+        },1);
+        }         
+
+        
+    
+    </script>
+</body>
+
+</html>

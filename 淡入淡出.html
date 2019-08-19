@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .par {
+            width: 600px;
+            height: 400px;
+            border: 1px solid black;
+            margin: auto;
+            position: relative;
+        }
+
+        .par > div.items {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .par > div > a img {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .nav {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            left: 0;
+            bottom: 0;
+            text-align: center;
+        }
+
+        .nav > div {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px #fff;
+            display: inline-block;
+        }
+
+        .bgcolor {
+            background: red;
+        }
+
+        .btn {
+            position: absolute;
+            top: 180px;
+            z-index: 11;
+            width: 100%;
+        }
+
+        .btn > span {
+            display: block;
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.69);
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        .btn > span:nth-child(1) {
+            border-radius: 0 50% 50% 0;
+            float: left;
+        }
+
+        .btn > span:nth-child(2) {
+            border-radius: 50% 0 0 50%;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="par">
+    <div class="items"><a href="#"><img src="./img/1.jpg" alt=""/></a></div>
+    <div class="items"><a href="#"><img src="./img/2.jpg" alt=""/></a></div>
+    <div class="items"><a href="#"><img src="./img/3.jpg" alt=""/></a></div>
+    <div class="items"><a href="#"><img src="./img/4.jpg" alt=""/></a></div>
+    <div class="items"><a href="#"><img src="./img/5.jpg" alt=""/></a></div>
+    <div class="items"><a href="#"><img src="./img/6.jpg" alt=""/></a></div>
+    <div class="nav">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="btn">
+        <span><</span>
+        <span>></span>
+    </div>
+</div>
+<script>
+    /*
+     * 淡入淡出动画
+     * 1.设置层的情况
+     * 2.写层的动画
+     * 3.添加淡入淡出动画
+     * 4.写圈圈动画  默认第一个有颜色  ---对应的图片对应的圈 变化
+     *5.添加事件  鼠标进入和离开
+     * 6.给点添加事件
+     * 7.当前点变色   显示当前对应的图片
+     * 8.给两个箭头添加点击事件操作动画
+     * */
+    var items = document.getElementsByClassName("items");
+    var dian = document.getElementsByClassName("nav")[0].children;
+    var btnspan = document.getElementsByClassName("btn")[0].children;
+    var parentEle = document.getElementsByClassName("par")[0];
+    var speed = 2000;
+    items[0].style.opacity = 1;
+    var index = 0;
+    var timer = null;
+    //设置层
+    function attrZindex() {
+        for (var i = 0; i < items.length; i++) {
+            items[i].style.zIndex = items.length - i - 1;
+        }
+    }
+    //动画方法
+    function animate() {
+        timer = setInterval(function () {
+            setindexopacity("right", 1);
+            addColor();
+        }, speed);
+    }
+    function setindexopacity(res, count) {
+        for (var k = 0; k < count; k++) {
+            for (var i = 0; i < items.length; i++) {
+                var zindex = parseInt(items[i].style.zIndex);
+                if (res == "right") {
+                    zindex += 1;
+                    if (zindex >= items.length) {
+                        items[i].style.opacity = 0;
+                        zindex = 0;
+                    }
+                    if (zindex == items.length - 1) {
+                        items[i].style.opacity = 1;
+                        //动态修改index 的值
+                        index = i;
+                    }
+                }
+                else {
+                    zindex -= 1;
+                    if (zindex == -1) {
+                        items[i].style.opacity = 1;
+                        zindex = items.length - 1;
+                        //动态修改index 的值
+                        index = i;
+                    }
+                    else if (zindex == items.length - 2) {
+                        items[i].style.opacity = 0;
+                    }
+                }
+                items[i].style.zIndex = zindex;
+            }
+        }
+    }
+    //点颜色的相关操作
+    function addColor() {
+        for (var i = 0; i < dian.length; i++) {
+            if (i == index) {
+                dian[i].className = "bgcolor";
+            }
+            else {
+                dian[i].className = "";
+            }
+        }
+    }
+    window.onload = function () {
+        attrZindex();
+        animate();
+        addColor();
+        //操作动画  停止开启
+        parentEle.onmouseenter = function () {
+            clearInterval(timer);
+        }
+        parentEle.onmouseleave = function () {
+            animate();
+        }
+        //给点添加事件
+        for (var i = 0; i < dian.length; i++) {
+            dian[i].index = i;
+            dian[i].onmouseenter = function () {
+                //鼠标进入当前点变色
+                //使用当前的索引 -之前的索引
+                var count = this.index - index > 0 ? this.index - index : dian.length + (this.index - index);
+                setindexopacity("right", count);
+                index = this.index;
+                addColor();
+            }
+        }
+        //给left  right btn 事件
+        //left
+        btnspan[0].onclick = function () {
+            setindexopacity("left", 1);
+            addColor();
+        }
+        //right
+        btnspan[1].onclick = function () {
+            setindexopacity("right", 1);
+            addColor();
+        }
+    }
+</script>
+</body>
+</html>
